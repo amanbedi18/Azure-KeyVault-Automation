@@ -21,10 +21,7 @@ Param(
     [Parameter(ParameterSetName='Customize',Mandatory=$true)]
     [Parameter(ParameterSetName='Secondary',Mandatory=$true)]	
 	[String]
-	$KVSecretMetadataFilePath,
-    [Parameter(ParameterSetName='Secondary',Mandatory=$true)]
-	[String]
-    $mainKeyVaultName
+	$KVSecretMetadataFilePath
 )
 
 Install-Module -Name AzureADPreview -ErrorAction SilentlyContinue -Force 
@@ -49,12 +46,4 @@ Else
     Write-Host
     Write-Host "Source Vault Resource Id: "$(Get-AzureRmKeyVault -VaultName $KeyVaultName).ResourceId
 }
-}
-
-
-if($PSCmdlet.ParameterSetName -eq 'Secondary')
-{
-    $node = $json | where {$_.Key -eq 'iotHubConnectionString'}
-
-    Set-AzureKeyVaultSecret -VaultName $mainKeyVaultName -Name "DRIotHubConnectionString" -SecretValue (ConvertTo-SecureString $node.value -AsPlainText -Force ) -Verbose
 }
